@@ -1,0 +1,9 @@
+---
+triple:          'x86_64-apple-darwin'
+binary-path:     '/Users/victorsores/Developer/Pim/PIM/main'
+relocations:
+  - { offset: 0x26, size: 0x8, addend: 0x0, symName: _admin, symObjAddr: 0x0, symBinAddr: 0x100000D90, symSize: 0x20 }
+  - { offset: 0x41, size: 0x8, addend: 0x0, symName: _admin, symObjAddr: 0x0, symBinAddr: 0x100000D90, symSize: 0x20 }
+  - { offset: 0x56, size: 0x8, addend: 0x0, symName: _client, symObjAddr: 0x20, symBinAddr: 0x100000DB0, symSize: 0x20 }
+  - { offset: 0x6B, size: 0x8, addend: 0x0, symName: _main, symObjAddr: 0x40, symBinAddr: 0x100000DD0, symSize: 0x101 }
+...
