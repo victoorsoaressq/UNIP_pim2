@@ -1,9 +1,21 @@
 ---
 triple:          'x86_64-apple-darwin'
-binary-path:     '/Users/victorsores/Developer/Pim/PIM/main'
+binary-path:     '/Users/victorsores/Developer/Pim/UNIP_pim2/main'
 relocations:
-  - { offset: 0x26, size: 0x8, addend: 0x0, symName: _admin, symObjAddr: 0x0, symBinAddr: 0x100000D90, symSize: 0x20 }
-  - { offset: 0x41, size: 0x8, addend: 0x0, symName: _admin, symObjAddr: 0x0, symBinAddr: 0x100000D90, symSize: 0x20 }
-  - { offset: 0x56, size: 0x8, addend: 0x0, symName: _client, symObjAddr: 0x20, symBinAddr: 0x100000DB0, symSize: 0x20 }
-  - { offset: 0x6B, size: 0x8, addend: 0x0, symName: _main, symObjAddr: 0x40, symBinAddr: 0x100000DD0, symSize: 0x101 }
+  - { offset: 0x26, size: 0x8, addend: 0x0, symName: _headerServidor, symObjAddr: 0x0, symBinAddr: 0x100000B30, symSize: 0x40 }
+  - { offset: 0x3F, size: 0x8, addend: 0x0, symName: _numProducts, symObjAddr: 0x3FC0, symBinAddr: 0x100004000, symSize: 0x0 }
+  - { offset: 0x5B, size: 0x8, addend: 0x0, symName: _numCarIten, symObjAddr: 0x3FC4, symBinAddr: 0x100004004, symSize: 0x0 }
+  - { offset: 0x96, size: 0x8, addend: 0x0, symName: _estoque, symBinAddr: 0x100005080, symSize: 0x0 }
+  - { offset: 0xFE, size: 0x8, addend: 0x0, symName: _cart, symBinAddr: 0x100004010, symSize: 0x0 }
+  - { offset: 0x13B, size: 0x8, addend: 0x0, symName: _headerServidor, symObjAddr: 0x0, symBinAddr: 0x100000B30, symSize: 0x40 }
+  - { offset: 0x150, size: 0x8, addend: 0x0, symName: _toRegister, symObjAddr: 0x40, symBinAddr: 0x100000B70, symSize: 0x320 }
+  - { offset: 0x193, size: 0x8, addend: 0x0, symName: _stock, symObjAddr: 0x360, symBinAddr: 0x100000E90, symSize: 0x1F0 }
+  - { offset: 0x1D3, size: 0x8, addend: 0x0, symName: _admin, symObjAddr: 0x550, symBinAddr: 0x100001080, symSize: 0x190 }
+  - { offset: 0x1F7, size: 0x8, addend: 0x0, symName: _headerClient, symObjAddr: 0x6E0, symBinAddr: 0x100001210, symSize: 0x40 }
+  - { offset: 0x20C, size: 0x8, addend: 0x0, symName: _showToCart, symObjAddr: 0x720, symBinAddr: 0x100001250, symSize: 0x1D0 }
+  - { offset: 0x24C, size: 0x8, addend: 0x0, symName: _addToCart, symObjAddr: 0x8F0, symBinAddr: 0x100001420, symSize: 0x170 }
+  - { offset: 0x2A2, size: 0x8, addend: 0x0, symName: _buyProduct, symObjAddr: 0xA60, symBinAddr: 0x100001590, symSize: 0x3C0 }
+  - { offset: 0x355, size: 0x8, addend: 0x0, symName: _toPay, symObjAddr: 0xE20, symBinAddr: 0x100001950, symSize: 0x380 }
+  - { offset: 0x3C4, size: 0x8, addend: 0x0, symName: _client, symObjAddr: 0x11A0, symBinAddr: 0x100001CD0, symSize: 0x1A0 }
+  - { offset: 0x3EA, size: 0x8, addend: 0x0, symName: _main, symObjAddr: 0x1340, symBinAddr: 0x100001E70, symSize: 0x1D5 }
 ...
