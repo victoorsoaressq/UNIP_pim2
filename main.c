@@ -12,7 +12,7 @@ typedef struct
     char name[MAX_NAME];
     float price;
     int amount;
-    char type[MAX_TYPE]; // Novo campo para armazenar o tipo do produto
+    char type[MAX_TYPE]; 
 } Product;
 
 typedef struct
@@ -32,15 +32,22 @@ int numCarIten = 0; // Número de itens no carrinho
 void headerServidor()
 {
     system("clear");
+    int totalItems = 0;
+
+    // Calcula a quantidade total de itens no estoque
+    for (int i = 0; i < numProducts; i++)
+    {
+        totalItems += estoque[i].amount; // Soma a quantidade de cada produto no estoque
+    }
+
     printf("--------------------------------------------------------------------------------\n");
-    printf("        Servidor                                                                \n");
+    printf("        Servidor                                        Itens no estoque: %d\n", totalItems);
     printf("--------------------------------------------------------------------------------\n");
 }
 
-// Funcao cadastro de produtos
+// Função cadastro de produtos
 void toRegister()
 {
-
     int option;
     int typeOption;
 
@@ -52,18 +59,29 @@ void toRegister()
     }
 
     Product newProduct;
-    // Recebendo o nome do produto
-    printf("Digite o nome do produto: ");
-    getchar(); // Limpa o buffer antes de usar fgets
-    fgets(newProduct.name, MAX_NAME, stdin);
-    newProduct.name[strcspn(newProduct.name, "\n")] = '\0'; // Remove o '\n' do final
+
+    printf("\n");
+    printf("     ██████  █████  ██████   █████  ███████ ████████ ██████   █████  ██████ \n");
+    printf("    ██      ██   ██ ██   ██ ██   ██ ██         ██    ██   ██ ██   ██ ██   ██\n");
+    printf("    ██      ███████ ██   ██ ███████ ███████    ██    ██████  ███████ ██████ \n");
+    printf("    ██      ██   ██ ██   ██ ██   ██      ██    ██    ██   ██ ██   ██ ██   ██\n");
+    printf("     ██████ ██   ██ ██████  ██   ██ ███████    ██    ██   ██ ██   ██ ██   ██\n");
+    printf("\n");
+
+    printf("\n");
+    printf("\n");
+    printf("\n");
 
     // Recebendo o tipo do produto
-    printf("Escolha o tipo do produto:\n");
-    printf("1. Fruta\n");
-    printf("2. Legume\n");
-    printf("3. Verdura\n");
-    printf("Opção: ");
+    printf("                            Escolha o tipo do produto:\n");
+    printf("\n");
+    printf("                   [1] Fruta      [2] Legume      [3] Verdura\n");
+
+    printf("\n");
+    printf("\n");
+    printf("\n");
+
+    printf("   Opção: ");
     scanf("%d", &typeOption);
 
     switch (typeOption)
@@ -82,29 +100,91 @@ void toRegister()
         strcpy(newProduct.type, "Outro");
     }
 
+    // Recebendo o nome do produto
+    printf("   Digite o nome do produto: ");
+    getchar(); // Limpa o buffer antes de usar fgets
+    fgets(newProduct.name, MAX_NAME, stdin);
+    newProduct.name[strcspn(newProduct.name, "\n")] = '\0'; // Remove o '\n' do final
+
     // Recebendo o preço do produto
-    printf("Digite o preço do produto: ");
+    printf("   Digite o preço do produto: ");
     scanf("%f", &newProduct.price);
 
     // Recebendo a quantidade do produto
-    printf("Digite a quantidade do produto: ");
+    printf("   Digite a quantidade do produto: ");
     scanf("%d", &newProduct.amount);
 
-    // Adiciona o produto ao estoque
+    // Verificar se o produto já existe no estoque (mesmo nome e tipo)
+    for (int i = 0; i < numProducts; i++)
+    {
+        if (strcmp(estoque[i].name, newProduct.name) == 0 && strcmp(estoque[i].type, newProduct.type) == 0)
+        {
+            // Produto encontrado, atualiza a quantidade
+            estoque[i].amount += newProduct.amount;
+            headerServidor();
+            printf("\n");
+            printf("\n");
+            printf("\n");
+            printf("\n");
+            printf("\n");
+
+            printf("\n");
+            printf("                    Produto já cadastrado! Quantidade atualizada.\n");
+            printf("\n");
+            printf("                         Deseja cadastrar um novo produto?");
+            printf("\n");
+            printf("\n                                  [1] Para sim");
+            printf("\n");
+            printf("\n                                  [2] Para não");
+
+            printf("\n");
+            printf("\n");
+            printf("\n");
+            printf("\n");
+            printf("\n");
+            printf("\n");
+            printf("\n");
+
+            printf("   Escolha um opção: ");
+            scanf("%d", &option);
+
+            if (option == 1)
+            {
+                toRegister();
+            }
+            return; // Sai da função se o produto já foi atualizado
+        }
+    }
+
+    // Se o produto não foi encontrado no estoque, cadastra como um novo produto
     estoque[numProducts] = newProduct;
     numProducts++;
-    printf("\n");
-    printf("Produto cadastrado com sucesso!\n");
-    printf("\n");
-    printf("Deseja cadastrar um novo produto?");
-    printf("\n");
-    printf("\n [1] Para sim .");
-    printf("\n");
-    printf(" \n [2] Para não.");
+
+    headerServidor();
+
     printf("\n");
     printf("\n");
     printf("\n");
-    printf("Escolha um opção: ");
+    printf("\n");
+    printf("\n");
+    printf("                          Produto cadastrado com sucesso!\n");
+    printf("\n");
+    printf("                         Deseja cadastrar um novo produto?");
+    printf("\n");
+    printf("\n");
+    printf("\n                                  [1] Para sim");
+    printf("\n");
+    printf("\n                                  [2] Para não");
+
+    printf("\n");
+    printf("\n");
+    printf("\n");
+    printf("\n");
+    printf("\n");
+    printf("\n");
+    printf("\n");
+
+    printf("   Escolha um opção: ");
     scanf("%d", &option);
 
     if (option == 1)
@@ -120,12 +200,10 @@ void toRegister()
 // Função Estoque
 void stock()
 {
-
     int option;
 
     if (numProducts == 0)
     {
-
         headerServidor();
         printf(" Estoque vazio.");
         printf("\n");
@@ -140,23 +218,57 @@ void stock()
     }
     else
     {
-
         headerServidor();
 
+        printf("\n");
+
+        // Exibir produtos do tipo "Fruta"
+        printf("                          ====== Sessão: Frutas ======\n");
         for (int i = 0; i < numProducts; i++)
         {
-            printf("Produto %d:\n", i + 1);
-            printf("Nome: %s\n", estoque[i].name);
-            printf("Tipo: %s\n", estoque[i].type);
-            printf("Preço: %.2f\n", estoque[i].price);
-            printf("Quantidade: %d\n", estoque[i].amount);
-            printf("---------------------------\n");
+            if (strcmp(estoque[i].type, "Fruta") == 0)
+            {
+                printf("                                   Produto: %d\n", i + 1);
+                printf("                                   Nome: %s\n", estoque[i].name);
+                printf("                                   Preço: %.2f\n", estoque[i].price);
+                printf("                                   Quantidade: %d\n", estoque[i].amount);
+                printf("                            ---------------------------\n");
+            }
         }
+
+        // Exibir produtos do tipo "Legume"
+        printf("                          ====== Sessão: Legumes ======\n");
+        for (int j = 0; j < numProducts; j++)
+        {
+            if (strcmp(estoque[j].type, "Legume") == 0)
+            {
+                printf("                                   Produto: %d\n", j + 1);
+                printf("                                   Nome: %s\n", estoque[j].name);
+                printf("                                   Preço: %.2f\n", estoque[j].price);
+                printf("                                   Quantidade: %d\n", estoque[j].amount);
+                printf("                            ---------------------------\n");
+            }
+        }
+
+        // Exibir produtos do tipo "Verdura"
+        printf("                          ====== Sessão: Verduras ======\n");
+        for (int t = 0; t < numProducts; t++)
+        {
+            if (strcmp(estoque[t].type, "Verdura") == 0)
+            {
+                printf("                                   Produto: %d\n", t + 1);
+                printf("                                   Nome: %s\n", estoque[t].name);
+                printf("                                   Preço: %.2f\n", estoque[t].price);
+                printf("                                   Quantidade: %d\n", estoque[t].amount);
+                printf("                            ---------------------------\n");
+            }
+        }
+
         printf("\n");
         printf("\n");
-        printf("Digite 0 para retornar ao início.");
+        printf("\n    Digite 0 para retornar");
         printf("\n");
-        printf("Digite a opção: ");
+        printf("\n    opção: ");
         scanf("%d", &option);
 
         if (option != 1)
@@ -165,21 +277,21 @@ void stock()
 }
 
 // Painel ADMIN
-void admin()
+void server()
 {
 
     int option;
 
     headerServidor();
     printf("\n");
+
+    printf("           ███████ ███████ ██████  ██    ██ ██ ██████   ██████  ██████   \n");
+    printf("           ██      ██      ██   ██ ██    ██ ██ ██   ██ ██    ██ ██   ██  \n");
+    printf("           ███████ █████   ██████  ██    ██ ██ ██   ██ ██    ██ ██████   \n");
+    printf("                ██ ██      ██   ██  ██  ██  ██ ██   ██ ██    ██ ██   ██  \n");
+    printf("           ███████ ███████ ██   ██   ████   ██ ██████   ██████  ██   ██  \n");
+
     printf("\n");
-
-    printf("        ███████ ███████ ██████  ██    ██ ██ ██████   ██████  ██████   \n");
-    printf("        ██      ██      ██   ██ ██    ██ ██ ██   ██ ██    ██ ██   ██  \n");
-    printf("        ███████ █████   ██████  ██    ██ ██ ██   ██ ██    ██ ██████   \n");
-    printf("             ██ ██      ██   ██  ██  ██  ██ ██   ██ ██    ██ ██   ██  \n");
-    printf("        ███████ ███████ ██   ██   ████   ██ ██████   ██████  ██   ██  \n");
-
     printf("\n");
     printf("\n");
     printf("\n");
@@ -191,8 +303,10 @@ void admin()
     printf("                            3. Voltar\n");
 
     printf("\n");
+    printf("\n");
+    printf("\n");
 
-    printf("\n    Escolha uma opção: ");
+    printf("\n   Escolha uma opção: ");
     scanf("%d", &option);
 
     switch (option)
@@ -215,11 +329,20 @@ void admin()
 void headerClient()
 {
     system("clear");
+    int totalItems = 0;
+
+    // Calcula a quantidade total de itens no carrinho
+    for (int i = 0; i < numCarIten; i++)
+    {
+        totalItems += cart[i].amount; // Soma a quantidade de cada item no carrinho
+    }
+
     printf("--------------------------------------------------------------------------------\n");
-    printf("        Caixa                                                                \n");
+    printf("        Caixa                                         Itens no carrinho: %d\n", totalItems);
     printf("--------------------------------------------------------------------------------\n");
 }
 
+// Função mostrar carrinho
 void showToCart()
 {
 
@@ -325,13 +448,14 @@ void buyProduct()
     int numAvailable = 0;
 
     headerClient();
+    printf("\n");
 
     printf("          ██████  ██████  ███    ███ ██████  ██████   █████  ██████  \n");
     printf("         ██      ██    ██ ████  ████ ██   ██ ██   ██ ██   ██ ██   ██ \n");
     printf("         ██      ██    ██ ██ ████ ██ ██████  ██████  ███████ ██████  \n");
     printf("         ██      ██    ██ ██  ██  ██ ██      ██   ██ ██   ██ ██   ██ \n");
     printf("          ██████  ██████  ██      ██ ██      ██   ██ ██   ██ ██   ██ \n");
-    printf("\n");
+    
     printf("\n");
     printf("\n");
     // Menu de escolha do tipo de produto
@@ -346,8 +470,8 @@ void buyProduct()
     printf("                                4. Voltar\n");
     printf("\n");
     printf("\n");
-    printf("\n");
-    printf("     Opção: ");
+
+    printf("   Opção: ");
     scanf("%d", &typeOptions);
 
     // Logica para voltar ao inicio.
@@ -450,11 +574,11 @@ void toPay()
     headerClient();
     printf("\n");
 
-    printf(" ██████   █████   ██████   █████  ███    ███ ███████ ███    ██ ████████  ██████  \n");
-    printf(" ██   ██ ██   ██ ██       ██   ██ ████  ████ ██      ████   ██    ██    ██    ██ \n");
-    printf(" ██████  ███████ ██   ███ ███████ ██ ████ ██ █████   ██ ██  ██    ██    ██    ██ \n");
-    printf(" ██      ██   ██ ██    ██ ██   ██ ██  ██  ██ ██      ██  ██ ██    ██    ██    ██ \n");
-    printf(" ██      ██   ██  ██████  ██   ██ ██      ██ ███████ ██   ████    ██     ██████  \n");
+    printf(" ██████   █████   ██████   █████  ███    ███ ███████ ███    ██ ████████  ██████ \n");
+    printf(" ██   ██ ██   ██ ██       ██   ██ ████  ████ ██      ████   ██    ██    ██    ██\n");
+    printf(" ██████  ███████ ██   ███ ███████ ██ ████ ██ █████   ██ ██  ██    ██    ██    ██\n");
+    printf(" ██      ██   ██ ██    ██ ██   ██ ██  ██  ██ ██      ██  ██ ██    ██    ██    ██\n");
+    printf(" ██      ██   ██  ██████  ██   ██ ██      ██ ███████ ██   ████    ██     ██████ \n");
 
     printf("\n");
     printf("\n");
@@ -596,6 +720,8 @@ void principal()
         system("clear");
         printf("\n");
         printf("\n");
+        printf("\n");
+        printf("\n");
 
         printf("   ██   ██  ██████  ██████  ████████ ██ ███████ ██████  ██    ██ ████████ ██ \n");
         printf("   ██   ██ ██    ██ ██   ██    ██    ██ ██      ██   ██ ██    ██    ██    ██ \n");
@@ -607,27 +733,25 @@ void principal()
         printf("\n");
         printf("\n");
 
+        printf("                                  1. Servidor\n");
         printf("\n");
-
-        printf("                               1. Servidor\n");
+        printf("                                  2. Caixa\n");
         printf("\n");
-        printf("                               2. Caixa\n");
-        printf("\n");
-        printf("                               3. Sair\n");
+        printf("                                  3. Sair\n");
 
         printf("\n");
         printf("\n");
         printf("\n");
         printf("\n");
-        printf("\n");
+       
 
-        printf("\n    Escolha uma opção: ");
+        printf("\n   Escolha uma opção: ");
         scanf("%d", &option);
 
         switch (option)
         {
         case 1:
-            admin();
+            server();
             break;
         case 2:
             client();
