@@ -2,21 +2,21 @@
 triple:          'x86_64-apple-darwin'
 binary-path:     '/Users/victorsores/Developer/Pim/UNIP_pim2/main'
 relocations:
-  - { offset: 0x26, size: 0x8, addend: 0x0, symName: _headerServidor, symObjAddr: 0x0, symBinAddr: 0x100000B80, symSize: 0x90 }
-  - { offset: 0x3F, size: 0x8, addend: 0x0, symName: _numProducts, symObjAddr: 0x6744, symBinAddr: 0x100006000, symSize: 0x0 }
-  - { offset: 0x5B, size: 0x8, addend: 0x0, symName: _numCarIten, symObjAddr: 0x6748, symBinAddr: 0x100006004, symSize: 0x0 }
+  - { offset: 0x26, size: 0x8, addend: 0x0, symName: _headerServidor, symObjAddr: 0x0, symBinAddr: 0x100000BA0, symSize: 0x90 }
+  - { offset: 0x3F, size: 0x8, addend: 0x0, symName: _numProducts, symObjAddr: 0x6734, symBinAddr: 0x100006000, symSize: 0x0 }
+  - { offset: 0x5B, size: 0x8, addend: 0x0, symName: _numCarIten, symObjAddr: 0x6738, symBinAddr: 0x100006004, symSize: 0x0 }
   - { offset: 0x8A, size: 0x8, addend: 0x0, symName: _estoque, symBinAddr: 0x100007080, symSize: 0x0 }
   - { offset: 0xFE, size: 0x8, addend: 0x0, symName: _cart, symBinAddr: 0x100006010, symSize: 0x0 }
-  - { offset: 0x13B, size: 0x8, addend: 0x0, symName: _headerServidor, symObjAddr: 0x0, symBinAddr: 0x100000B80, symSize: 0x90 }
-  - { offset: 0x17B, size: 0x8, addend: 0x0, symName: _toRegister, symObjAddr: 0x90, symBinAddr: 0x100000C10, symSize: 0x620 }
-  - { offset: 0x1DB, size: 0x8, addend: 0x0, symName: _stock, symObjAddr: 0x6B0, symBinAddr: 0x100001230, symSize: 0x3F0 }
-  - { offset: 0x253, size: 0x8, addend: 0x0, symName: _server, symObjAddr: 0xAA0, symBinAddr: 0x100001620, symSize: 0x190 }
-  - { offset: 0x279, size: 0x8, addend: 0x0, symName: _headerClient, symObjAddr: 0xC30, symBinAddr: 0x1000017B0, symSize: 0x90 }
-  - { offset: 0x2BC, size: 0x8, addend: 0x0, symName: _showToCart, symObjAddr: 0xCC0, symBinAddr: 0x100001840, symSize: 0x1D0 }
-  - { offset: 0x2FF, size: 0x8, addend: 0x0, symName: _addToCart, symObjAddr: 0xE90, symBinAddr: 0x100001A10, symSize: 0x200 }
-  - { offset: 0x355, size: 0x8, addend: 0x0, symName: _buyProduct, symObjAddr: 0x1090, symBinAddr: 0x100001C10, symSize: 0x540 }
-  - { offset: 0x408, size: 0x8, addend: 0x0, symName: _toPay, symObjAddr: 0x15D0, symBinAddr: 0x100002150, symSize: 0x4C0 }
-  - { offset: 0x477, size: 0x8, addend: 0x0, symName: _client, symObjAddr: 0x1A90, symBinAddr: 0x100002610, symSize: 0x1A0 }
-  - { offset: 0x49D, size: 0x8, addend: 0x0, symName: _principal, symObjAddr: 0x1C30, symBinAddr: 0x1000027B0, symSize: 0x260 }
-  - { offset: 0x4C3, size: 0x8, addend: 0x0, symName: _main, symObjAddr: 0x1E90, symBinAddr: 0x100002A10, symSize: 0xD }
+  - { offset: 0x13B, size: 0x8, addend: 0x0, symName: _headerServidor, symObjAddr: 0x0, symBinAddr: 0x100000BA0, symSize: 0x90 }
+  - { offset: 0x17B, size: 0x8, addend: 0x0, symName: _toRegister, symObjAddr: 0x90, symBinAddr: 0x100000C30, symSize: 0x620 }
+  - { offset: 0x1DB, size: 0x8, addend: 0x0, symName: _stock, symObjAddr: 0x6B0, symBinAddr: 0x100001250, symSize: 0x3F0 }
+  - { offset: 0x253, size: 0x8, addend: 0x0, symName: _server, symObjAddr: 0xAA0, symBinAddr: 0x100001640, symSize: 0x190 }
+  - { offset: 0x279, size: 0x8, addend: 0x0, symName: _headerClient, symObjAddr: 0xC30, symBinAddr: 0x1000017D0, symSize: 0x90 }
+  - { offset: 0x2BC, size: 0x8, addend: 0x0, symName: _showToCart, symObjAddr: 0xCC0, symBinAddr: 0x100001860, symSize: 0x1D0 }
+  - { offset: 0x2FF, size: 0x8, addend: 0x0, symName: _addToCart, symObjAddr: 0xE90, symBinAddr: 0x100001A30, symSize: 0x200 }
+  - { offset: 0x355, size: 0x8, addend: 0x0, symName: _buyProduct, symObjAddr: 0x1090, symBinAddr: 0x100001C30, symSize: 0x540 }
+  - { offset: 0x408, size: 0x8, addend: 0x0, symName: _toPay, symObjAddr: 0x15D0, symBinAddr: 0x100002170, symSize: 0x4C0 }
+  - { offset: 0x477, size: 0x8, addend: 0x0, symName: _client, symObjAddr: 0x1A90, symBinAddr: 0x100002630, symSize: 0x1A0 }
+  - { offset: 0x49D, size: 0x8, addend: 0x0, symName: _principal, symObjAddr: 0x1C30, symBinAddr: 0x1000027D0, symSize: 0x260 }
+  - { offset: 0x4C3, size: 0x8, addend: 0x0, symName: _main, symObjAddr: 0x1E90, symBinAddr: 0x100002A30, symSize: 0xD }
 ...
