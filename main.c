@@ -7,14 +7,13 @@
 #define MAX_TYPE 20      // Tamanho máximo do tipo do produto
 #define MAX_CART 50      // Limite de itens no carrinho
 
-typedef struct
-{
+typedef struct {
     char name[MAX_NAME];
+    char type[20];
     float price;
     int amount;
-    char type[MAX_TYPE]; 
+    float weight; // Novo campo para o peso
 } Product;
-
 typedef struct
 {
     Product product;
@@ -114,6 +113,10 @@ void toRegister()
     printf("   Digite a quantidade do produto: ");
     scanf("%d", &newProduct.amount);
 
+    // Recebendo o peso por unidade do produto
+    printf("   Digite o peso por unidade (em kg): ");
+    scanf("%f", &newProduct.weight);
+
     // Verificar se o produto já existe no estoque (mesmo nome e tipo)
     for (int i = 0; i < numProducts; i++)
     {
@@ -197,6 +200,63 @@ void toRegister()
     }
 }
 
+// Função apagar produto
+void deleteProduct()
+{
+    int productId;
+
+    if (numProducts == 0)
+    {
+        headerServidor();
+        printf(" Estoque vazio.\n");
+        printf("\nDigite 0 para retornar ao início.\n");
+        printf("Digite a opção: ");
+        scanf("%d", &productId);
+
+        if (productId == 0)
+            return;
+    }
+    else
+    {
+        headerServidor();
+        printf("\n===== Produtos disponíveis =====\n");
+
+        // Listar todos os produtos no estoque
+        for (int i = 0; i < numProducts; i++)
+        {
+            printf("Produto: %d\n", i + 1);
+            printf("Nome: %s\n", estoque[i].name);
+            printf("Preço: %.2f\n", estoque[i].price);
+            printf("Quantidade: %d\n", estoque[i].amount);
+            printf("---------------------------\n");
+        }
+
+        printf("\nDigite o número do produto que deseja apagar: ");
+        scanf("%d", &productId);
+
+        // Validar ID do produto
+        if (productId < 1 || productId > numProducts)
+        {
+            printf("\nID inválido. Retornando...\n");
+            return;
+        }
+
+        // Ajustar índice para zero-based
+        productId--;
+
+        // Remover o produto do estoque
+        for (int i = productId; i < numProducts - 1; i++)
+        {
+            estoque[i] = estoque[i + 1];
+        }
+
+        // Reduzir o número de produtos no estoque
+        numProducts--;
+
+        printf("\nProduto removido com sucesso!\n");
+    }
+};
+
 // Função Estoque
 void stock()
 {
@@ -226,12 +286,18 @@ void stock()
         printf("                          ====== Sessão: Frutas ======\n");
         for (int i = 0; i < numProducts; i++)
         {
+            float totalWeight = estoque[i].amount * estoque[i].weight;
+
+
+
             if (strcmp(estoque[i].type, "Fruta") == 0)
             {
                 printf("                                   Produto: %d\n", i + 1);
                 printf("                                   Nome: %s\n", estoque[i].name);
                 printf("                                   Preço: %.2f\n", estoque[i].price);
                 printf("                                   Quantidade: %d\n", estoque[i].amount);
+                printf("                                   Peso por unidade: %.3f kg\n", estoque[i].weight);
+                printf("                                   Peso total: %.3f kg\n", totalWeight);
                 printf("                            ---------------------------\n");
             }
         }
@@ -247,6 +313,7 @@ void stock()
                 printf("                                   Preço: %.2f\n", estoque[j].price);
                 printf("                                   Quantidade: %d\n", estoque[j].amount);
                 printf("                            ---------------------------\n");
+                printf("                            ---------------------------\n");
             }
         }
 
@@ -261,21 +328,28 @@ void stock()
                 printf("                                   Preço: %.2f\n", estoque[t].price);
                 printf("                                   Quantidade: %d\n", estoque[t].amount);
                 printf("                            ---------------------------\n");
+                printf("                            ---------------------------\n");
             }
         }
 
         printf("\n");
         printf("\n");
-        printf("\n    Digite 0 para retornar");
+        printf("\n    Digite 0 para retornar.");
+        printf("\n");
+        printf("\n    Digite 1 para apagar produto.");
         printf("\n");
         printf("\n    opção: ");
         scanf("%d", &option);
 
-        if (option != 1)
-            return;
-    }
-}
+        if (option == 1){
+            deleteProduct();
 
+            } else if (option != 2){
+                return;
+            };
+
+    };
+}
 // Painel ADMIN
 void server()
 {
@@ -300,7 +374,9 @@ void server()
     printf("\n");
     printf("                            2. Estoque\n");
     printf("\n");
-    printf("                            3. Voltar\n");
+    printf("                            3. Produtos vendidos\n");
+    printf("\n");
+    printf("                            4. Voltar\n");
 
     printf("\n");
     printf("\n");
@@ -317,8 +393,10 @@ void server()
     case 2:
         stock();
         break;
-
     case 3:
+    
+    break;
+    case 4:
         return;
     default:
         printf("Opção inválida!\n");
@@ -368,10 +446,13 @@ void showToCart()
     {
         for (int i = 0; i < numCarIten; i++)
         {
+         float totalWeight = cart[i].amount * cart[i].product.weight;
+
             printf("Item %d:\n", i + 1);
             printf("Nome: %s\n", cart[i].product.name);
             printf("Preço: %.2f\n", cart[i].product.price);
             printf("Quantidade: %d\n", cart[i].amount);
+            printf("Peso total: %.3f kg\n", totalWeight);
             printf("---------------------------\n");
         }
         printf("\n");
@@ -455,7 +536,7 @@ void buyProduct()
     printf("         ██      ██    ██ ██ ████ ██ ██████  ██████  ███████ ██████  \n");
     printf("         ██      ██    ██ ██  ██  ██ ██      ██   ██ ██   ██ ██   ██ \n");
     printf("          ██████  ██████  ██      ██ ██      ██   ██ ██   ██ ██   ██ \n");
-    
+    printf("\n");
     printf("\n");
     printf("\n");
     // Menu de escolha do tipo de produto
@@ -655,6 +736,145 @@ void toPay()
     }
 }
 
+int weight() {
+  
+    int productId, quantity;
+    float totalWeight, totalPrice;
+
+    if (numProducts == 0)
+    {
+        headerServidor();
+        printf(" Estoque vazio.\n");
+        printf("\nDigite 0 para retornar ao início.\n");
+        printf("Digite a opção: ");
+        scanf("%d", &productId);
+
+        if (productId == 0){
+            return 0;
+        };
+            
+    }
+    else
+    {
+        headerServidor();
+        printf("\n");
+        printf("\n");
+        printf("\n===== Produtos disponíveis =====\n");
+
+        // Listar todos os produtos no estoque
+        for (int i = 0; i < numProducts; i++)
+        {
+            printf("\n");
+            
+            printf("Produto: %d\n", i + 1);
+            printf("Nome: %s\n", estoque[i].name);
+            printf("Preço: %.2f\n", estoque[i].price);
+            printf("Quantidade disponível: %d\n", estoque[i].amount);
+            printf("-------------------------------\n");
+        }
+        printf("\n");
+        printf("\n");
+        printf("Selecione o número do produto que deseja pesar (ou 0 para voltar): ");
+        scanf("%d", &productId);
+
+        // Validar a seleção do produto
+        if (productId == 0)
+         return 0;
+         
+
+        if (productId < 1 || productId > numProducts)
+        {
+            printf("Produto inválido!\n");
+            return 0;
+        }
+
+        // Ajustar para índice do array
+        productId--;
+
+        // Solicitar a quantidade do produto
+        printf("\n");
+        printf("Digite a quantidade de '%s': ", estoque[productId].name);
+        scanf("%d", &quantity);
+
+        // Calcular o peso total
+        totalWeight = quantity * estoque[productId].weight;
+        totalPrice =  quantity * estoque[productId].price;
+
+        system("clear");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("             ========= Etiqueta =========\n");
+        printf("                 Produto selecionado: %s\n", estoque[productId].name);
+        printf("                 Quantidade informada: %d \n", quantity);
+        printf("                 Peso total: %.3f kg\n", totalWeight);
+        printf("                 TOTAL: R$ %.2f \n", totalPrice);
+        printf("\n");
+        printf("                 |||| ||| ||||| | ||| \n");
+        printf("                 |||| ||| ||||| | ||| \n");
+        
+        printf("             ============================\n");
+
+        printf("\nDigite 0 para retornar ao início.\n");
+        int option;
+        scanf("%d", &option);
+
+        if (option == 0)
+            return 0;
+    };
+
+
+
+};
+
+void balance(){
+    
+
+ int option;
+
+    while (1)
+    {
+        system("clear");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+
+    printf("              1. Pesar Produto \n");
+    printf("\n");
+    printf("              2. Voltar \n");
+    printf("\n");
+
+
+
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+       
+       
+
+
+
+        printf("\n   Escolha uma opção: ");
+        scanf("%d", &option);
+
+        switch (option)
+        {
+        case 1:
+            weight();
+            break;
+        case 2:
+            return;
+        break;
+    };
+    };
+};
+
+
+
+// Painel CLIENT
 // Painel CLIENT
 void client()
 {
@@ -735,15 +955,22 @@ void principal()
 
         printf("                                  1. Servidor\n");
         printf("\n");
-        printf("                                  2. Caixa\n");
+        printf("                                  2. Balança\n ");
         printf("\n");
-        printf("                                  3. Sair\n");
+        printf("                                  3. Caixa\n");
+        printf("\n");
+        printf("\n");
+        printf("                                  4. Sair\n");
+
 
         printf("\n");
         printf("\n");
         printf("\n");
         printf("\n");
        
+       
+
+
 
         printf("\n   Escolha uma opção: ");
         scanf("%d", &option);
@@ -754,9 +981,12 @@ void principal()
             server();
             break;
         case 2:
-            client();
+        balance();
             break;
         case 3:
+            client();
+            break;
+
 
             system("clear");
             printf("\n");
@@ -775,11 +1005,11 @@ void principal()
             printf("Opção inválida!\n");
         }
     }
-}
+};
 
 // Função Principal
 int main()
 {
 
     principal();
-}
+};
