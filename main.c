@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <locale.h>
 
 #define MAX_PRODUCTS 100 // Limite de produtos no estoque
 #define MAX_NAME 50      // Tamanho máximo do nome do produto
@@ -10,9 +11,10 @@
 typedef struct
 {
     char name[MAX_NAME];
+    char type[20];
     float price;
     int amount;
-    char type[MAX_TYPE]; 
+    float weight;
 } Product;
 
 typedef struct
@@ -20,6 +22,18 @@ typedef struct
     Product product;
     int amount; // Quantidade do produto que foi comprada
 } CarItem;
+
+// Estrutura para armazenar os produtos vendidos
+typedef struct
+{
+    char name[50];
+    float price;
+    int amount;
+} ProdutoVendido;
+
+// Array para armazenar produtos vendidos
+ProdutoVendido produtosVendidos[100];
+int numProdutosVendidos = 0; // Contador de produtos vendidos
 
 // Variável global para o estoque de produtos
 Product estoque[MAX_PRODUCTS];
@@ -31,7 +45,7 @@ int numCarIten = 0; // Número de itens no carrinho
 
 void headerServidor()
 {
-    system("clear");
+    system("cls");
     int totalItems = 0;
 
     // Calcula a quantidade total de itens no estoque
@@ -61,13 +75,15 @@ void toRegister()
     Product newProduct;
 
     printf("\n");
-    printf("     ██████  █████  ██████   █████  ███████ ████████ ██████   █████  ██████ \n");
-    printf("    ██      ██   ██ ██   ██ ██   ██ ██         ██    ██   ██ ██   ██ ██   ██\n");
-    printf("    ██      ███████ ██   ██ ███████ ███████    ██    ██████  ███████ ██████ \n");
-    printf("    ██      ██   ██ ██   ██ ██   ██      ██    ██    ██   ██ ██   ██ ██   ██\n");
-    printf("     ██████ ██   ██ ██████  ██   ██ ███████    ██    ██   ██ ██   ██ ██   ██\n");
-    printf("\n");
 
+    printf("                 _____             _              _                      \n");
+    printf("                /  __ \\           | |            | |                     \n");
+    printf("                | /  \\/  __ _   __| |  __ _  ___ | |_  _ __   __ _  _ __ \n");
+    printf("                | |     / _` | / _` | / _` |/ __|| __|| '__| / _` || '__|\n");
+    printf("                | \\__/\\| (_| || (_| || (_| |\\__ \\| |_ | |   | (_| || |   \n");
+    printf("                 \\____/ \\__,_| \\__,_| \\__,_||___/ \\__||_|    \\__,_||_|   \n");
+
+    printf("\n");
     printf("\n");
     printf("\n");
     printf("\n");
@@ -113,6 +129,10 @@ void toRegister()
     // Recebendo a quantidade do produto
     printf("   Digite a quantidade do produto: ");
     scanf("%d", &newProduct.amount);
+
+    // Recebendo o peso por unidade do produto
+    printf("   Digite o peso por unidade (em kg): ");
+    scanf("%f", &newProduct.weight);
 
     // Verificar se o produto já existe no estoque (mesmo nome e tipo)
     for (int i = 0; i < numProducts; i++)
@@ -197,6 +217,63 @@ void toRegister()
     }
 }
 
+// Função apagar produto
+void deleteProduct()
+{
+    int productId;
+
+    if (numProducts == 0)
+    {
+        headerServidor();
+        printf(" Estoque vazio.\n");
+        printf("\nDigite 0 para retornar ao início.\n");
+        printf("Digite a opção: ");
+        scanf("%d", &productId);
+
+        if (productId == 0)
+            return;
+    }
+    else
+    {
+        headerServidor();
+        printf("\n===== Produtos disponíveis =====\n");
+
+        // Listar todos os produtos no estoque
+        for (int i = 0; i < numProducts; i++)
+        {
+            printf("Produto: %d\n", i + 1);
+            printf("Nome: %s\n", estoque[i].name);
+            printf("Preço: %.2f\n", estoque[i].price);
+            printf("Quantidade: %d\n", estoque[i].amount);
+            printf("---------------------------\n");
+        }
+
+        printf("\nDigite o número do produto que deseja apagar: ");
+        scanf("%d", &productId);
+
+        // Validar ID do produto
+        if (productId < 1 || productId > numProducts)
+        {
+            printf("\nID inválido. Retornando...\n");
+            return;
+        }
+
+        // Ajustar índice para zero-based
+        productId--;
+
+        // Remover o produto do estoque
+        for (int i = productId; i < numProducts - 1; i++)
+        {
+            estoque[i] = estoque[i + 1];
+        }
+
+        // Reduzir o número de produtos no estoque
+        numProducts--;
+
+        printf("\nProduto removido com sucesso!\n");
+    }
+};
+
 // Função Estoque
 void stock()
 {
@@ -205,12 +282,35 @@ void stock()
     if (numProducts == 0)
     {
         headerServidor();
-        printf(" Estoque vazio.");
+
         printf("\n");
         printf("\n");
-        printf("Digite 0 para retornar ao início.");
         printf("\n");
-        printf("Digite a opção: ");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+
+        printf("                                Estoque vazio.");
+
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+
+        printf("  Digite 0 para retornar ao início");
+        printf("\n");
+        printf("\n");
+        printf("  Digite a opção: ");
         scanf("%d", &option);
 
         if (option != 1)
@@ -226,12 +326,16 @@ void stock()
         printf("                          ====== Sessão: Frutas ======\n");
         for (int i = 0; i < numProducts; i++)
         {
+            float totalWeight = estoque[i].amount * estoque[i].weight;
+
             if (strcmp(estoque[i].type, "Fruta") == 0)
             {
                 printf("                                   Produto: %d\n", i + 1);
                 printf("                                   Nome: %s\n", estoque[i].name);
                 printf("                                   Preço: %.2f\n", estoque[i].price);
                 printf("                                   Quantidade: %d\n", estoque[i].amount);
+                printf("                                   Peso por unidade: %.3f kg\n", estoque[i].weight);
+                printf("                                   Peso total: %.3f kg\n", totalWeight);
                 printf("                            ---------------------------\n");
             }
         }
@@ -247,6 +351,7 @@ void stock()
                 printf("                                   Preço: %.2f\n", estoque[j].price);
                 printf("                                   Quantidade: %d\n", estoque[j].amount);
                 printf("                            ---------------------------\n");
+                printf("                            ---------------------------\n");
             }
         }
 
@@ -261,14 +366,97 @@ void stock()
                 printf("                                   Preço: %.2f\n", estoque[t].price);
                 printf("                                   Quantidade: %d\n", estoque[t].amount);
                 printf("                            ---------------------------\n");
+                printf("                            ---------------------------\n");
             }
         }
 
         printf("\n");
         printf("\n");
-        printf("\n    Digite 0 para retornar");
+        printf("\n    Digite 0 para retornar.");
+        printf("\n");
+        printf("\n    Digite 1 para apagar produto.");
         printf("\n");
         printf("\n    opção: ");
+        scanf("%d", &option);
+
+        if (option == 1)
+        {
+            deleteProduct();
+        }
+        else if (option != 2)
+        {
+            return;
+        };
+    };
+}
+
+void registrarProdutosVendidos()
+{
+    // Adicionar produtos do carrinho ao array de produtos vendidos
+    for (int i = 0; i < numCarIten; i++)
+    {
+        strcpy(produtosVendidos[numProdutosVendidos].name, cart[i].product.name);
+        produtosVendidos[numProdutosVendidos].price = cart[i].product.price;
+        produtosVendidos[numProdutosVendidos].amount = cart[i].amount;
+        numProdutosVendidos++;
+    }
+}
+
+void exibirProdutosVendidos()
+{
+    int option;
+
+    headerServidor();
+    printf("\n");
+    printf("\n");
+    printf("                                 PRODUTOS VENDIDOS");
+    printf("\n");
+    printf("\n");
+
+    if (numProdutosVendidos == 0)
+    {
+        printf("\n                      Nenhum produto foi vendido até agora.\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+
+        printf("  Digite 0 para retornar ao início");
+        printf("\n");
+        printf("\n");
+        printf("  Digite a opção: ");
+        scanf("%d", &option);
+
+        if (option != 1)
+            return;
+    }
+    else
+    {
+        printf("\n=========== Produtos Vendidos ===========\n");
+        for (int i = 0; i < numProdutosVendidos; i++)
+        {
+            printf("Item %d:\n", i + 1);
+            printf("Nome: %s\n", produtosVendidos[i].name);
+            printf("Preço unitário: %.2f\n", produtosVendidos[i].price);
+            printf("Quantidade: %d\n", produtosVendidos[i].amount);
+            printf("Total: %.2f\n", produtosVendidos[i].price * produtosVendidos[i].amount);
+            printf("---------------------------\n");
+        }
+
+        printf("  Digite 0 para retornar ao início");
+        printf("\n");
+        printf("\n");
+        printf("  Digite a opção: ");
         scanf("%d", &option);
 
         if (option != 1)
@@ -285,11 +473,12 @@ void server()
     headerServidor();
     printf("\n");
 
-    printf("           ███████ ███████ ██████  ██    ██ ██ ██████   ██████  ██████   \n");
-    printf("           ██      ██      ██   ██ ██    ██ ██ ██   ██ ██    ██ ██   ██  \n");
-    printf("           ███████ █████   ██████  ██    ██ ██ ██   ██ ██    ██ ██████   \n");
-    printf("                ██ ██      ██   ██  ██  ██  ██ ██   ██ ██    ██ ██   ██  \n");
-    printf("           ███████ ███████ ██   ██   ████   ██ ██████   ██████  ██   ██  \n");
+    printf("                _____                     _      _              \n");
+    printf("               /  ___|                   (_)    | |             \n");
+    printf("               \\ `--.   ___  _ __ __   __ _   __| |  ___   _ __ \n");
+    printf("                `--. \\ / _ \\| '__|\\ \\ / /| | / _` | / _ \\ | '__|\n");
+    printf("               /\\__/ /|  __/| |    \\ V / | || (_| || (_) || |   \n");
+    printf("               \\____/  \\___||_|     \\_/  |_| \\__,_| \\___/ |_|   \n");
 
     printf("\n");
     printf("\n");
@@ -300,7 +489,9 @@ void server()
     printf("\n");
     printf("                            2. Estoque\n");
     printf("\n");
-    printf("                            3. Voltar\n");
+    printf("                            3. Produtos vendidos\n");
+    printf("\n");
+    printf("                            4. Voltar\n");
 
     printf("\n");
     printf("\n");
@@ -317,8 +508,10 @@ void server()
     case 2:
         stock();
         break;
-
     case 3:
+        exibirProdutosVendidos();
+        break;
+    case 4:
         return;
     default:
         printf("Opção inválida!\n");
@@ -328,7 +521,7 @@ void server()
 // Função Header
 void headerClient()
 {
-    system("clear");
+    system("cls");
     int totalItems = 0;
 
     // Calcula a quantidade total de itens no carrinho
@@ -349,14 +542,33 @@ void showToCart()
     int option;
 
     headerClient();
-
-    printf("\n=========== Carrinho de Compras ===========\n");
     if (numCarIten == 0)
     {
-        printf("Carrinho vazio!\n");
         printf("\n");
         printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+
+        printf("                                Carrinho vazio!\n");
+
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+
         printf("Digite 0 para retornar ao início.");
+        printf("\n");
         printf("\n");
         printf("Digite a opção: ");
         scanf("%d", &option);
@@ -368,11 +580,29 @@ void showToCart()
     {
         for (int i = 0; i < numCarIten; i++)
         {
-            printf("Item %d:\n", i + 1);
-            printf("Nome: %s\n", cart[i].product.name);
-            printf("Preço: %.2f\n", cart[i].product.price);
-            printf("Quantidade: %d\n", cart[i].amount);
-            printf("---------------------------\n");
+            float totalWeight = cart[i].amount * cart[i].product.weight;
+
+            printf("\n");
+            
+
+            printf("                 _____                     _         _            \n");
+            printf("                /  __ \\                   (_)       | |           \n");
+            printf("                | /  \\/  __ _  _ __  _ __  _  _ __  | |__    ___  \n");
+            printf("                | |     / _` || '__|| '__|| || '_ \\ | '_ \\  / _ \\ \n");
+            printf("                | \\__/\\| (_| || |   | |   | || | | || | | || (_) |\n");
+            printf("                 \\____/ \\__,_||_|   |_|   |_||_| |_||_| |_| \\___/ \n");
+
+            printf("\n");
+            printf("\n");
+            printf("\n");
+
+            printf("                          Item %d:\n", i + 1);
+            printf("                          Nome: %s\n", cart[i].product.name);
+            printf("                          Preço: %.2f\n", cart[i].product.price);
+            printf("                          Quantidade: %d\n", cart[i].amount);
+            printf("                          Peso total: %.3f kg\n", totalWeight);
+            printf("                        -------------------\n");
+            printf("\n");
         }
         printf("\n");
         printf("\n");
@@ -450,12 +680,14 @@ void buyProduct()
     headerClient();
     printf("\n");
 
-    printf("          ██████  ██████  ███    ███ ██████  ██████   █████  ██████  \n");
-    printf("         ██      ██    ██ ████  ████ ██   ██ ██   ██ ██   ██ ██   ██ \n");
-    printf("         ██      ██    ██ ██ ████ ██ ██████  ██████  ███████ ██████  \n");
-    printf("         ██      ██    ██ ██  ██  ██ ██      ██   ██ ██   ██ ██   ██ \n");
-    printf("          ██████  ██████  ██      ██ ██      ██   ██ ██   ██ ██   ██ \n");
-    
+    printf("               ______                   _         _               \n");
+    printf("               | ___ \\                 | |       | |              \n");
+    printf("               | |_/ / _ __   ___    __| | _   _ | |_   ___   ___ \n");
+    printf("               |  __/ | '__| / _ \\  / _` || | | || __| / _ \\ / __|\n");
+    printf("               | |    | |   | (_) || (_| || |_| || |_ | (_) |\\__ \\\n");
+    printf("               \\_|    |_|    \\___/  \\__,_| \\__,_| \\__| \\___/ |___/\n");
+
+    printf("\n");
     printf("\n");
     printf("\n");
     // Menu de escolha do tipo de produto
@@ -496,16 +728,45 @@ void buyProduct()
     // Exibe os produtos disponíveis
     if (numAvailable == 0)
     {
-        printf("Não há produtos disponíveis para essa categoria.\n");
-        return;
+        int option;
+
+        system("cls");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        
+
+        printf("                 Não há produtos disponíveis para essa categoria.\n");
+
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("  Digite 0 para retornar ao início");
+        printf("\n");
+        printf("\n");
+        printf("  Digite a opção: ");
+        scanf("%d", &option);
+
+        if (option != 1)
+            return;
     }
     headerClient();
     printf("\n");
-    printf("     ██████  ██████   ██████  ██████  ██    ██ ████████  ██████  ███████ \n");
-    printf("     ██   ██ ██   ██ ██    ██ ██   ██ ██    ██    ██    ██    ██ ██      \n");
-    printf("     ██████  ██████  ██    ██ ██   ██ ██    ██    ██    ██    ██ ███████ \n");
-    printf("     ██      ██   ██ ██    ██ ██   ██ ██    ██    ██    ██    ██      ██ \n");
-    printf("     ██      ██   ██  ██████  ██████   ██████     ██     ██████  ███████ \n");
+
     printf("\n");
     printf("\n");
     printf("\n");
@@ -553,13 +814,13 @@ void buyProduct()
 // Função para exibir e pagar os itens do carrinho
 void toPay()
 {
-
     int option;
     float total = 0;
 
     if (numCarIten == 0)
     {
         headerClient();
+
         printf("\n");
         printf("\n");
         printf("\n");
@@ -567,28 +828,36 @@ void toPay()
         printf("\n");
         printf("\n");
         printf("\n");
-        printf("                Carrinho vazio! Não há nada para pagar.\n");
-        return;
+        printf("\n");
+
+        printf("\n                    Carrinho vazio! Não há nada para pagar.\n");
+        
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+
+        printf("  Digite 0 para retornar ao início");
+        printf("\n");
+        printf("\n");
+        printf("  Digite a opção: ");
+        scanf("%d", &option);
+
+        if (option != 1)
+            return;
     }
 
     headerClient();
-    printf("\n");
+    printf("\nItens no carrinho:\n");
 
-    printf(" ██████   █████   ██████   █████  ███    ███ ███████ ███    ██ ████████  ██████ \n");
-    printf(" ██   ██ ██   ██ ██       ██   ██ ████  ████ ██      ████   ██    ██    ██    ██\n");
-    printf(" ██████  ███████ ██   ███ ███████ ██ ████ ██ █████   ██ ██  ██    ██    ██    ██\n");
-    printf(" ██      ██   ██ ██    ██ ██   ██ ██  ██  ██ ██      ██  ██ ██    ██    ██    ██\n");
-    printf(" ██      ██   ██  ██████  ██   ██ ██      ██ ███████ ██   ████    ██     ██████ \n");
-
-    printf("\n");
-    printf("\n");
-
-    printf("                                Itens no carrinho:\n");
-    printf("\n");
-    printf("\n");
     for (int i = 0; i < numCarIten; i++)
     {
-        printf("     %d. %s - Quantidade: %d - Preço unitário: %.2f - Total: %.2f\n",
+        printf(" %d. %s - Quantidade: %d - Preço unitário: %.2f - Total: %.2f\n",
                i + 1,
                cart[i].product.name,
                cart[i].amount,
@@ -597,21 +866,15 @@ void toPay()
         total += cart[i].product.price * cart[i].amount;
     }
 
-    printf("\n                     Valor total da compra: %.2f\n", total);
-    printf("\n");
-    printf("\n  Deseja pagar? (1-Sim / 2-Não): ");
+    printf("\nValor total da compra: %.2f\n", total);
+    printf("\nDeseja pagar? (1-Sim / 2-Não): ");
     scanf("%d", &option);
 
     if (option == 1)
     {
         headerClient();
-        printf("\n");
-        printf("███    ██  ██████  ████████  █████      ███████ ██ ███████  ██████  █████  ██   \n");
-        printf("████   ██ ██    ██    ██    ██   ██     ██      ██ ██      ██      ██   ██ ██   \n");
-        printf("██ ██  ██ ██    ██    ██    ███████     █████   ██ ███████ ██      ███████ ██   \n");
-        printf("██  ██ ██ ██    ██    ██    ██   ██     ██      ██      ██ ██      ██   ██ ██   \n");
-        printf("██   ████  ██████     ██    ██   ██     ██      ██ ███████  ██████ ██   ██ █████\n");
-        printf("\n");
+        printf("\nPagamento efetuado com sucesso!\n");
+
         for (int i = 0; i < numCarIten; i++)
         {
             printf("%d. %s - Quantidade: %d - Preço unitário: %.2f - Total: %.2f\n",
@@ -622,22 +885,17 @@ void toPay()
                    cart[i].product.price * cart[i].amount);
         }
         printf("\nValor total pago: %.2f\n", total);
-        printf("\n");
-        printf("\n");
-        printf("Obrigado pela compra!\n");
-        printf("\n");
+
+        // Registrar os produtos vendidos
+        registrarProdutosVendidos();
 
         // Limpa o carrinho após a compra
         numCarIten = 0;
-        printf("Deseja comprar um novo produto?");
-        printf("\n");
-        printf("\n [1] Para sim .");
-        printf("\n");
-        printf(" \n [2] Para não.");
-        printf("\n");
-        printf("\n");
-        printf("\n");
-        printf("Escolha um opção: ");
+
+        printf("\nDeseja comprar um novo produto?");
+        printf("\n[1] Para sim.");
+        printf("\n[2] Para não.");
+        printf("\nEscolha uma opção: ");
         scanf("%d", &option);
 
         if (option == 1)
@@ -651,9 +909,174 @@ void toPay()
     }
     else
     {
-        printf("Pagamento cancelado.\n");
+        printf("\nPagamento cancelado.\n");
     }
-}
+};
+
+int weight()
+{
+
+    int productId, quantity;
+    float totalWeight, totalPrice;
+
+    if (numProducts == 0)
+    {
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+
+        printf("                                  Estoque vazio.\n");
+        printf("\n");
+        printf("\n                       Digite 0 para retornar ao início.\n");
+
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("     Digite a opção: ");
+        scanf("%d", &productId);
+
+        if (productId == 0)
+        {
+            return 0;
+        };
+    }
+    else
+    {
+        system("cls");
+        printf("\n");
+        printf("\n");
+
+        printf("\n          ==================== Produtos disponíveis ====================\n");
+
+        printf("\n");
+        printf("\n");
+
+        // Listar todos os produtos no estoque
+        for (int i = 0; i < numProducts; i++)
+        {
+            printf("\n");
+            printf("\n");
+
+            printf("                                  Produto: %d\n", i + 1);
+            printf("                                  Nome: %s\n", estoque[i].name);
+            printf("                                  Preço: %.2f\n", estoque[i].price);
+            printf("                                  Quantidade: %d\n", estoque[i].amount);
+            printf("                                ------------------\n");
+        }
+        printf("\n");
+        printf("\n");
+        printf("Selecione o número do produto que deseja pesar (ou 0 para voltar): ");
+        scanf("%d", &productId);
+
+        // Validar a seleção do produto
+        if (productId == 0)
+            return 0;
+
+        if (productId < 1 || productId > numProducts)
+        {
+            printf("Produto inválido!\n");
+            return 0;
+        }
+
+        // Ajustar para índice do array
+        productId--;
+
+        // Solicitar a quantidade do produto
+        printf("\n");
+        printf("Digite a quantidade de '%ss': ", estoque[productId].name);
+        scanf("%d", &quantity);
+
+        // Calcular o peso total
+        totalWeight = quantity * estoque[productId].weight;
+        totalPrice = quantity * estoque[productId].price;
+
+        system("cls");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+
+        printf("                   ============ Etiqueta ============\n");
+        printf("\n");
+        printf("                       Produto selecionado: %s\n", estoque[productId].name);
+        printf("                       Quantidade informada: %d \n", quantity);
+        printf("                       Peso total: %.3f kg\n", totalWeight);
+        printf("                       TOTAL: R$ %.2f \n", totalPrice);
+        printf("\n");
+        printf("                       |||| ||| ||||| || ||| ||||  \n");
+        printf("                       |||| ||| ||||| || ||| ||||  \n");
+        printf("\n");
+        printf("                   ==================================\n");
+
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+
+        printf("\nDigite 0 para retornar ao início.\n");
+        int option;
+        scanf("%d", &option);
+
+        if (option == 0)
+            return 0;
+    };
+};
+
+void balance()
+{
+
+    int option;
+
+    while (1)
+    {
+        system("cls");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+
+        printf("                ______         _                            \n");
+        printf("                | ___ \\       | |                           \n");
+        printf("                | |_/ /  __ _ | |  __ _  _ __    ___   __ _ \n");
+        printf("                | ___ \\ / _` || | / _` || '_ \\  / __| / _` |\n");
+        printf("                | |_/ /| (_| || || (_| || | | || (__ | (_| |\n");
+        printf("                \\____/  \\__,_||_| \\__,_||_| |_| \\___| \\__,_|\n");
+
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+
+        printf("                              1. Pesar Produto \n");
+        printf("\n");
+        printf("                              2. Voltar \n");
+        printf("\n");
+
+        printf("\n");
+        printf("\n");
+        printf("\n");
+        printf("\n");
+
+        printf("\n   Escolha uma opção: ");
+        scanf("%d", &option);
+
+        switch (option)
+        {
+        case 1:
+            weight();
+            break;
+        case 2:
+            return;
+            break;
+        };
+    };
+};
 
 // Painel CLIENT
 void client()
@@ -665,12 +1088,14 @@ void client()
         headerClient();
         printf("\n");
 
-        printf("                        ██████  █████  ██ ██   ██  █████  \n");
-        printf("                       ██      ██   ██ ██  ██ ██  ██   ██ \n");
-        printf("                       ██      ███████ ██   ███   ███████ \n");
-        printf("                       ██      ██   ██ ██  ██ ██  ██   ██ \n");
-        printf("                        ██████ ██   ██ ██ ██   ██ ██   ██ \n");
+        printf("                          _____         _              \n");
+        printf("                         /  __ \\       (_)             \n");
+        printf("                         | /  \\/  __ _  _ __  __  __ _ \n");
+        printf("                         | |     / _` || |\\ \\/ / / _` |\n");
+        printf("                         | \\__/\\| (_| || | >  < | (_| |\n");
+        printf("                          \\____/ \\__,_||_|/_/\\_\\ \\__,_|\n");
 
+        printf("\n");
         printf("\n");
         printf("\n");
 
@@ -712,22 +1137,23 @@ void client()
 // Painel principal.
 void principal()
 {
-
+    setlocale(LC_ALL, "Portuguese_Brazil.1252");
     int option;
+    system("color 1F");
 
     while (1)
     {
-        system("clear");
-        printf("\n");
-        printf("\n");
-        printf("\n");
-        printf("\n");
 
-        printf("   ██   ██  ██████  ██████  ████████ ██ ███████ ██████  ██    ██ ████████ ██ \n");
-        printf("   ██   ██ ██    ██ ██   ██    ██    ██ ██      ██   ██ ██    ██    ██    ██ \n");
-        printf("   ███████ ██    ██ ██████     ██    ██ █████   ██████  ██    ██    ██    ██ \n");
-        printf("   ██   ██ ██    ██ ██   ██    ██    ██ ██      ██   ██ ██    ██    ██    ██ \n");
-        printf("   ██   ██  ██████  ██   ██    ██    ██ ██      ██   ██  ██████     ██    ██ \n");
+        system("cls");
+        printf("\n");
+        printf("\n");
+        printf("                 _                   _    _   __               _    _ \n");
+        printf("                | |                 | |  (_) / _|             | |  (_)\n");
+        printf("                | |__    ___   _ __ | |_  _ | |_  _ __  _   _ | |_  _ \n");
+        printf("                | '_ \\  / _ \\ | '__|| __|| ||  _|| '__|| | | || __|| |\n");
+        printf("                | | | || (_) || |   | |_ | || |  | |   | |_| || |_ | |\n");
+        printf("                |_| |_| \\___/ |_|    \\__||_||_|  |_|    \\__,_| \\__||_|\n");
+        printf("\n");
 
         printf("\n");
         printf("\n");
@@ -735,15 +1161,17 @@ void principal()
 
         printf("                                  1. Servidor\n");
         printf("\n");
-        printf("                                  2. Caixa\n");
+        printf("                                  2. Balança\n ");
         printf("\n");
-        printf("                                  3. Sair\n");
+        printf("                                  3. Caixa\n");
+        printf("\n");
+        printf("\n");
+        printf("                                  4. Sair\n");
 
         printf("\n");
         printf("\n");
         printf("\n");
         printf("\n");
-       
 
         printf("\n   Escolha uma opção: ");
         scanf("%d", &option);
@@ -754,32 +1182,43 @@ void principal()
             server();
             break;
         case 2:
-            client();
+            balance();
             break;
         case 3:
+            client();
+            break;
+        case 4:
+            system("cls");
+            printf("\n");
+            printf("\n");
+            printf("\n");
+            printf("\n");
+            printf("\n");
+            printf("\n");
+            printf("\n");
+            printf("\n");
+            printf("\n");
+            printf("\n");
+            printf("                                     SAINDO...\n");
+            printf("\n");
+            printf("\n");
+            printf("\n");
+            printf("\n");
+            printf("\n");
+            printf("\n");
+            printf("\n");
+            printf("\n");
+            printf("\n");
 
-            system("clear");
-            printf("\n");
-            printf("\n");
-            printf("\n");
-            printf("\n");
-            printf("\n");
-
-            printf(" ███████  █████  ██ ███    ██ ██████   ██████           \n");
-            printf(" ██      ██   ██ ██ ████   ██ ██   ██ ██    ██          \n");
-            printf(" ███████ ███████ ██ ██ ██  ██ ██   ██ ██    ██          \n");
-            printf("      ██ ██   ██ ██ ██  ██ ██ ██   ██ ██    ██          \n");
-            printf(" ███████ ██   ██ ██ ██   ████ ██████   ██████  ██ ██ ██ \n");
             exit(0);
         default:
             printf("Opção inválida!\n");
         }
     }
-}
+};
 
 // Função Principal
 int main()
 {
-
     principal();
-}
+};
